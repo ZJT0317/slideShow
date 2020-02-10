@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	    <link rel="stylesheet" href="轮播图.css">
+	</head>
+	<body>
+		   <div class="yeshu">
+		       页数:<input type="text" value="0"><button class="yeshu">回到首页</button>	
+		  </div>
+		<div class="contain">
+			<!-- 绝对定位 -->
+			<div class="picture" style="left:-400px;">
+				<img src="IMG_20190725_145458.jpg">
+				<img src="IMG_20190725_145617.jpg">
+				<img src="IMG_20190725_145329.jpg">
+				<img src="IMG_20190725_145402.jpg">
+				<img src="IMG_20190725_153659.jpg">
+				<img src="IMG_20190725_145432.jpg">
+				<img src="IMG_20190725_145536.jpg">
+				<img src="IMG_20190725_145458.jpg">
+			    <img src="IMG_20190725_145617.jpg">
+			</div>
+			<!-- 绝对定位 -->
+			<div  class="button">
+				<span  index="1" class="on"></span>
+				<span  index="2"></span>
+				<span  index="3"></span>
+				<span  index="4"></span>
+				<span  index="5"></span>
+				<span  index="6"></span>
+				<span  index="7"></span>
+			</div>
+			<!-- 绝对定位 -->
+			 <a href="javascript:;" class="arr theleft">&lt;</a>
+		     <a href="javascript:;" class="arr theright">&gt;</a>
+			 <script type="text/javascript">
+			 	//window.onload事件表示在下载好一切html和css样式之后在进行操作
+			 		var   theleft=document.getElementsByClassName("theleft")[0];
+			 		var   theright=document.getElementsByClassName("theright")[0];
+			 		var   picture=document.getElementsByClassName("picture")[0];
+			 		//运动函数
+			 		function  move(obj,target){
+			 			 clearInterval(obj.timer);
+						 var  speed=obj.offsetLeft < target ? 10:-10;
+						 //这个定时器执行多次,碰见if时才会清除定时器
+			 			 obj.timer=window.setInterval(function(){
+			 				var  result=target-obj.offsetLeft;
+			 				obj.style.left=obj.offsetLeft + speed + "px";
+			 				if(Math.abs(result)<=10){
+			 					obj.style.left=target+"px";
+			 					clearInterval(obj.timer);
+			 				}
+			 			 },10);
+			 		}
+					
+					
+			 		//左右切换图片和圆点
+			 		//这些事件只要点击就会触发,可以触发很多次
+			 		var   theindex=1;
+			 		theleft.onclick=function(){
+			 			theindex-=1;
+			 			if(theindex==0){
+			 				theindex=7;
+							picture.style.left="-3200px";
+			 				move(picture,-2800);
+			 			}
+			 			else{
+						     move(picture,(theindex+1)*(-400)+400);
+			 			 }
+			 			clearStyle();
+			 		}
+			 		theright.onclick=function(){
+						theindex+=1;
+			 			if(theindex==8){
+			 				theindex=1;
+							picture.style.left="0px";
+							move(picture,-400);
+			 			}
+			 			else{
+							move(picture,-400*(theindex-1)-400);
+			 			}
+			 			clearStyle();
+			 		}
+			 		//移动原点函数
+			 		var   button=document.getElementsByTagName("span");
+			 		function   clearStyle(){
+			 		for(var  i=0;i<button.length;i++){
+			 		       if(button[i].className=="on"){
+			 					button[i].className="";
+			 				}
+			 			}
+			 			button[theindex-1].className="on";
+			 		}
+			 		
+			 		//自动轮播
+			 		var   thetime;
+			 		var   contain=document.getElementsByClassName("contain")[0];
+			 		function  play(){
+			 			thetime=window.setInterval(function(){
+			 				theright.onclick();
+			 			},1500);
+			 		}
+			 		//先要开始动起来
+			 		play();
+			 		function  stop(){
+			 			clearInterval(thetime);
+			 		}
+			 		contain.onmouseover=stop;
+			 		contain.onmouseout=play;
+			         //点击圆点切换图片
+			 		for(var  i=0;i<button.length;i++){
+			 			(function(i){
+			 				button[i].onclick=function(){
+			 					var  checkindex=parseInt(this.getAttribute("index"));
+			 					var  foot=400*(theindex-checkindex);
+			 					move(picture,foot+theindex*(-400));
+			 					theindex=checkindex;
+			 					clearStyle();
+			 				}
+			 			})(i)
+			 		}
+					var  page=document.getElementsByTagName("input")[0];
+					var   checkTheindex;
+					page.onkeyup=function(){
+						checkTheindex=Number(page.value);
+						if(checkTheindex>=1&&checkTheindex<=7){
+							var  foot1=400*(theindex-checkTheindex);
+							move(picture,foot1-400*theindex);
+							theindex=checkTheindex;
+							clearStyle();
+							clearInterval(picture.timer);
+						}
+						else{
+							alert("您输入的值不正确，请重新输入!");
+						}
+					}
+					var  buttons=document.getElementsByTagName("button")[0];
+					buttons.onclick=function(){
+					clearInterval(picture.timer);
+					move(picture,-400);
+					theindex=1;
+					clearStyle();
+					}
+					
+			 </script>
+	</body>
+</html>
